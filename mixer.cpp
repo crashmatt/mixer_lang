@@ -759,6 +759,61 @@ namespace{
       }
    }
 
+
+   void print_expr(apm_mix::abc_expr* expr, uint8_t exp_layer) {
+//	   apm_mix::abc_expr *fold = nullptr;
+//	   apm_mix::abc_expr *clone = nullptr;
+
+	   const char* str_ids[] = {"BOOL","INT","FLOAT"};
+
+	   const apm_mix::abc_expr::exprID ID = expr->get_ID();
+	   bool constant = expr->is_constant();
+
+	   for(int folds=0; folds <= exp_layer; folds++){
+		   printf("  ");
+	   }
+
+	   if(constant)
+		   printf("expr constant %s \n",  str_ids[(uint8_t) ID]);
+	   else
+		   printf("expr variable %s \n",  str_ids[(uint8_t) ID]);
+
+//	   fold = expr->fold();
+//	   if( (fold != nullptr) && (fold != expr) ) {
+//	   	   for(int folds=0; folds < exp_layer; folds++){
+//	   		   printf("  ");
+//		   }
+//		   printf("fold:%lu  ", (unsigned long) fold);
+//		   print_expr(fold, exp_layer+1);
+//	   }
+//
+//	   clone = expr->clone();
+//	   if( (clone != nullptr) && (clone != expr) ) {
+//		   clone = expr->clone();
+//	   	   for(int folds=0; folds < exp_layer; folds++){
+//	   		   printf("  ");
+//	   	   }
+//		   printf("clone:%lu  ", (unsigned long) clone);
+//	   	   print_expr(clone, exp_layer+1);
+//	   }
+   }
+
+   void print_item(apm_mix::lookup_item<apm_mix::abc_expr*> *item){
+	   printf("Item %s\n", item->m_name);
+	   print_expr(item->m_node, 0);
+   }
+
+   void print_symtab(){
+	   printf("symtab start\n");
+	   if(symtab == nullptr) return;
+	   apm_mix::lookup_item<apm_mix::abc_expr*> *item = symtab->first();
+//	   apm_mix::abc_expr* expr = symtab->m_first;
+	   while(item != nullptr){
+		   print_item(item);
+		   item = item->m_next;
+	   }
+   }
+
    // make the mixer loop function
    //mixer '(' ')' '{' Stmts '}'
    bool do_mix_loop()
@@ -787,6 +842,7 @@ namespace{
                        // at this point the symtab can be deleted 
                        // maybe only now copy the expressions to the mixer
                        // and thereby consolidate memory
+            	print_symtab();
                delete symtab;
                symtab = nullptr;
                return true;

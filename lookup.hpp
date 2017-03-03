@@ -32,6 +32,7 @@ namespace apm_mix{
       // preconditions, name is not in the symtab.
       // do check name isnt in there first!
       void add_item(const char* name, Node node);
+      lookup_item<Node> *first() {return m_first;};
    private:
       lookup_item<Node> * m_first;
    };
